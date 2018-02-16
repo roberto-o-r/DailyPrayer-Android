@@ -95,6 +95,7 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
             if (BuildConfig.DEBUG) {
                 adRequest = new AdRequest.Builder()
                         .addTestDevice(getString(R.string.test_device))
+
                         .build();
             } else {
                 adRequest = new AdRequest.Builder().build();
@@ -120,7 +121,7 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
         // Firebase analytics.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        // Create the presenter
+        // Create the presenter.
         new PrayerPresenter(new PrayerRemoteDataSource(), new PrayerLocalDataSource(), new ImageRemoteDataSource(), this);
         mPresenter.start();
     }
