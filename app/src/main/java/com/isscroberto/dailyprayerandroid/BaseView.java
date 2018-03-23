@@ -6,6 +6,4 @@ package com.isscroberto.dailyprayerandroid;
 
 public interface BaseView<T> {
 
-    void setPresenter(T presenter);
-
 }

@@ -18,7 +18,7 @@ public interface PrayerContract {
         void setLoadingIndicator(boolean active);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<View> {
         void loadPrayer();
         void loadImage();
         void savePrayer(Prayer prayer);

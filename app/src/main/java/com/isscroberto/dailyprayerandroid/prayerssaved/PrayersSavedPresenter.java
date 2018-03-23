@@ -6,6 +6,8 @@ import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
 import com.isscroberto.dailyprayerandroid.prayer.PrayerContract;
 
+import javax.inject.Inject;
+
 import io.realm.RealmResults;
 
 /**
@@ -15,23 +17,27 @@ import io.realm.RealmResults;
 public class PrayersSavedPresenter implements PrayersSavedContract.Presenter {
 
     private final PrayerLocalDataSource mPrayerLocalDataSource;
-    private final PrayersSavedContract.View mView;
+    private PrayersSavedContract.View mView;
 
-    public PrayersSavedPresenter(PrayerLocalDataSource prayerLocalDataSource, PrayersSavedContract.View view) {
+    @Inject
+    public PrayersSavedPresenter(PrayerLocalDataSource prayerLocalDataSource) {
         mPrayerLocalDataSource = prayerLocalDataSource;
-        mView = view;
-
-        view.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
-        loadPrayers();
     }
 
     @Override
     public void loadPrayers() {
         RealmResults<Prayer> prayers = mPrayerLocalDataSource.get();
         mView.showPrayers(prayers);
+    }
+
+    @Override
+    public void takeView(PrayersSavedContract.View view) {
+        this.mView = view;
+        loadPrayers();
+    }
+
+    @Override
+    public void dropView() {
+        this.mView = null;
     }
 }

@@ -18,7 +18,7 @@ public interface PrayersSavedContract {
         void showPrayers(RealmResults<Prayer> prayers);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<View> {
         void loadPrayers();
     }
 

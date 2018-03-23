@@ -43,7 +43,11 @@ dependencies {
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'io.realm:android-adapters:2.1.0'
+    implementation 'com.google.dagger:dagger:2.11'
+    implementation 'com.google.dagger:dagger-android-support:2.11'
 
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     testImplementation 'junit:junit:4.12'

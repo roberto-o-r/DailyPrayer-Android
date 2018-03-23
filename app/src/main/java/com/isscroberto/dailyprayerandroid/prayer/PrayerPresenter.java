@@ -7,12 +7,15 @@ import com.isscroberto.dailyprayerandroid.data.models.RssResponse;
 import com.isscroberto.dailyprayerandroid.data.source.ImageRemoteDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
+import com.isscroberto.dailyprayerandroid.di.ActivityScoped;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,26 +25,19 @@ import retrofit2.Response;
  * Created by roberto.orozco on 11/09/2017.
  */
 
+@ActivityScoped
 public class PrayerPresenter implements PrayerContract.Presenter {
 
     private final PrayerRemoteDataSource mPrayerDataSource;
     private final PrayerLocalDataSource mPrayerLocalDataSource;
     private final ImageRemoteDataSource mImageDataSource;
-    private final PrayerContract.View mView;
+    private PrayerContract.View mView;
 
-    public PrayerPresenter(PrayerRemoteDataSource prayerDataSource, PrayerLocalDataSource prayerLocalDataSource, ImageRemoteDataSource imageDataSource, PrayerContract.View view) {
+    @Inject
+    public PrayerPresenter(PrayerRemoteDataSource prayerDataSource, PrayerLocalDataSource prayerLocalDataSource, ImageRemoteDataSource imageDataSource) {
         mPrayerDataSource = prayerDataSource;
         mPrayerLocalDataSource = prayerLocalDataSource;
         mImageDataSource = imageDataSource;
-        mView = view;
-
-        view.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
-        loadPrayer();
-        loadImage();
     }
 
     @Override
@@ -113,5 +109,15 @@ public class PrayerPresenter implements PrayerContract.Presenter {
         mPrayerLocalDataSource.delete(id);
     }
 
+    @Override
+    public void takeView(PrayerContract.View prayerView) {
+        this.mView = prayerView;
+        loadPrayer();
+        loadImage();
+    }
 
+    @Override
+    public void dropView() {
+        this.mView = null;
+    }
 }

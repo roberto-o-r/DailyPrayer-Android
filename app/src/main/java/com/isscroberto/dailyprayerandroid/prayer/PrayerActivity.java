@@ -39,13 +39,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class PrayerActivity extends AppCompatActivity implements PrayerContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class PrayerActivity extends DaggerAppCompatActivity implements PrayerContract.View, SwipeRefreshLayout.OnRefreshListener {
 
-    //----- Bindings.
+    //----- UI Bindings.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.image_back)
@@ -63,8 +66,10 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
     @BindView(R.id.button_fav)
     FloatingActionButton buttonFav;
 
-    private PrayerContract.Presenter mPresenter;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    @Inject
+    PrayerPresenter mPresenter;
+    @Inject
+    FirebaseAnalytics mFirebaseAnalytics;
     private Item mPrayer;
 
     @Override
@@ -117,13 +122,18 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
                 }
             });
         }
+    }
 
-        // Firebase analytics.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.takeView(this);
+    }
 
-        // Create the presenter.
-        new PrayerPresenter(new PrayerRemoteDataSource(), new PrayerLocalDataSource(), new ImageRemoteDataSource(), this);
-        mPresenter.start();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();
     }
 
     @Override
@@ -175,13 +185,8 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
         }
         if (requestCode == 2) {
             // Verify if prayer is favorited.
-            mPresenter.start();
+            //mPresenter.start();
         }
-    }
-
-    @Override
-    public void setPresenter(PrayerContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
@@ -229,7 +234,7 @@ public class PrayerActivity extends AppCompatActivity implements PrayerContract.
 
     @Override
     public void onRefresh() {
-        mPresenter.start();
+        mPresenter.takeView(this);
     }
 
     @OnClick(R.id.button_fav)

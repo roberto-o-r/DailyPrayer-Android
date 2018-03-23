@@ -5,6 +5,9 @@ import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.data.models.RssResponse;
 import com.isscroberto.dailyprayerandroid.data.source.retrofit.PrayerApi;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -17,10 +20,12 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  * Created by roberto.orozco on 21/09/2017.
  */
 
+@Singleton
 public class PrayerLocalDataSource  {
 
     private Realm mRealm;
 
+    @Inject
     public PrayerLocalDataSource() {
         mRealm = Realm.getDefaultInstance();
     }

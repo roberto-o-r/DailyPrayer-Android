@@ -17,10 +17,13 @@ import com.isscroberto.dailyprayerandroid.R;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class PrayerDetailActivity extends AppCompatActivity implements PrayerDetailContract.View {
+public class PrayerDetailActivity extends DaggerAppCompatActivity implements PrayerDetailContract.View {
 
     //----- UI Bindings.
     @BindView(R.id.text_title)
@@ -30,7 +33,8 @@ public class PrayerDetailActivity extends AppCompatActivity implements PrayerDet
     @BindView(R.id.ad_view)
     AdView adView;
 
-    private PrayerDetailContract.Presenter mPresenter;
+    @Inject
+    PrayerDetailContract.Presenter mPresenter;
     private String mId;
 
     @Override
@@ -83,11 +87,18 @@ public class PrayerDetailActivity extends AppCompatActivity implements PrayerDet
         // Show prayer.
         textTitle.setText(title);
         textContent.setText(description);
+    }
 
-        // Create the presenter
-        new PrayerDetailPresenter(new PrayerLocalDataSource(), this);
-        mPresenter.start();
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.takeView(this);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();
     }
 
     @Override
@@ -132,10 +143,5 @@ public class PrayerDetailActivity extends AppCompatActivity implements PrayerDet
     public boolean onSupportNavigateUp(){
         finish();
         return true;
-    }
-
-    @Override
-    public void setPresenter(PrayerDetailContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 }

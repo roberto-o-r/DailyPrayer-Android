@@ -22,19 +22,23 @@ import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
 import com.isscroberto.dailyprayerandroid.prayer.PrayerContract;
 import com.isscroberto.dailyprayerandroid.prayerdetail.PrayerDetailActivity;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
-public class PrayersSavedActivity extends AppCompatActivity implements PrayersSavedContract.View {
+public class PrayersSavedActivity extends DaggerAppCompatActivity implements PrayersSavedContract.View {
 
     //----- Bindings.
     @BindView(R.id.list_prayers)
     RecyclerView listPrayers;
 
-    private PrayersSavedContract.Presenter mPresenter;
+    @Inject
+    PrayersSavedContract.Presenter mPresenter;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RealmResults<Prayer> mPrayers;
@@ -55,10 +59,18 @@ public class PrayersSavedActivity extends AppCompatActivity implements PrayersSa
         listPrayers.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         listPrayers.setLayoutManager(mLayoutManager);
+    }
 
-        // Create the presenter
-        new PrayersSavedPresenter(new PrayerLocalDataSource(), this);
-        mPresenter.start();
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.takeView(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.dropView();
     }
 
     @Override
@@ -68,11 +80,6 @@ public class PrayersSavedActivity extends AppCompatActivity implements PrayersSa
         finish();
 
         return true;
-    }
-
-    @Override
-    public void setPresenter(PrayersSavedContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
