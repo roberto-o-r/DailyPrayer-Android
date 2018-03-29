@@ -48,7 +48,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             public void onResponse(Call<RssResponse> call, Response<RssResponse> response) {
                 // Verify that response is not empty.
                 if(response.body() != null) {
-                    Item prayer = response.body().getChannel().getItem();
+                        Item prayer = response.body().getChannel().getItem();
 
                     // Create prayer id based on the date.
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
