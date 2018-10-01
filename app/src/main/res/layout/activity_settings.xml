@@ -51,6 +51,14 @@
             android:layout_marginTop="16dp"
             android:text="Remove Ads" />
 
+        <TextView
+            android:id="@+id/text_privacy_policy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Privacy Policy"
+            android:textAlignment="center" />
+
     </LinearLayout>
 
     <LinearLayout
