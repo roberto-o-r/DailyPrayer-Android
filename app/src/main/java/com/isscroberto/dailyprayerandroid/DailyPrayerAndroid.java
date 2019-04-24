@@ -25,6 +25,8 @@ public class DailyPrayerAndroid extends DaggerApplication {
                 .setCriticalFeedbackCollectors(new DefaultEmailFeedbackCollector(getString(R.string.my_email)))
                 .applyAllDefaultRules();
                 //.setAlwaysShow(BuildConfig.DEBUG);
+
+
     }
 
     @Override
