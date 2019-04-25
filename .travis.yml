@@ -25,6 +25,8 @@ before_script:
     # Prepare pre-accepted licenses to not be promted at installation
     #- mkdir -p "$ANDROID_HOME/licenses"
     #- cp ./google-licenses/* "$ANDROID_HOME/licenses/"
+    # Use example secrets file.
+    - mv app/src/main/res/values/secrets.xml-example app/src/main/res/values/secrets.xml
 before_install:
   - chmod +x gradlew
 script:
