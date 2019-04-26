@@ -26,7 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".prayerssaved.PrayersSavedActivity" />
-        <activity android:name=".prayerdetail.PrayerDetailActivity"></activity>
+        <activity android:name=".prayerdetail.PrayerDetailActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ad_mob_app_id"/>
