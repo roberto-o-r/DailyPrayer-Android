@@ -1,7 +1,5 @@
 package com.isscroberto.dailyprayerandroid;
 
-import android.app.Application;
-
 import com.github.stkent.amplify.feedback.DefaultEmailFeedbackCollector;
 import com.github.stkent.amplify.feedback.GooglePlayStoreFeedbackCollector;
 import com.github.stkent.amplify.tracking.Amplify;

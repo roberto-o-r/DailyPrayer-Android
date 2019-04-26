@@ -13,6 +13,6 @@ public class Image {
     }
 
     public void setUrl(String url) {
-        url = url;
+        this.url = url;
     }
 }

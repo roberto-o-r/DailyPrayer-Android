@@ -1,6 +1,5 @@
 package com.isscroberto.dailyprayerandroid.data.models;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 

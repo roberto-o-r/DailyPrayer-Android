@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -39,10 +38,12 @@ public class SettingsActivity extends AppCompatActivity implements BillingProces
         ButterKnife.bind(this);
 
         // Setup toolbar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // Verify if ads are enabled.
-        Boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
         if(adsEnabled) {
             // Initialize billing processor.
             mBillingProcessor = new BillingProcessor(this, getString(R.string.billing_license_key), this);
@@ -93,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements BillingProces
     @Override
     public void onBillingInitialized() {
         // Verify if user already removed ads.
-        boolean purchased = false;
+        boolean purchased;
         if (BuildConfig.DEBUG) {
             purchased = mBillingProcessor.isPurchased("android.test.purchased");
         } else {

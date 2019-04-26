@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class BingResponse {
 
     public BingResponse() {
-        images = new ArrayList<Image>();
+        images = new ArrayList<>();
     }
 
     private ArrayList<Image> images;
@@ -19,6 +19,6 @@ public class BingResponse {
     }
 
     public void setImages(ArrayList<Image> images) {
-        images = images;
+        this.images = images;
     }
 }

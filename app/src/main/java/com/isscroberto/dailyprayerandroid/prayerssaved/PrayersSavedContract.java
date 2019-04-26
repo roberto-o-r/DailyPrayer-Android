@@ -4,8 +4,6 @@ import com.isscroberto.dailyprayerandroid.BasePresenter;
 import com.isscroberto.dailyprayerandroid.BaseView;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 
-import java.util.ArrayList;
-
 import io.realm.RealmResults;
 
 /**

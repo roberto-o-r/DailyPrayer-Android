@@ -2,7 +2,6 @@ package com.isscroberto.dailyprayerandroid.prayerdetail;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +13,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.isscroberto.dailyprayerandroid.BuildConfig;
 import com.isscroberto.dailyprayerandroid.R;
-import com.isscroberto.dailyprayerandroid.data.models.Prayer;
-import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 
 import javax.inject.Inject;
 
@@ -46,11 +43,13 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
         ButterKnife.bind(this);
 
         // Setup toolbar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Saved Prayers");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Saved Prayers");
+        }
 
         // Verify if ads are enabled.
-        Boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
         if (adsEnabled) {
             // Load Ad Banner.
             AdRequest adRequest;
@@ -112,28 +111,26 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_delete:
-                AlertDialog.Builder alert = new AlertDialog.Builder(PrayerDetailActivity.this);
-                alert.setTitle("Delete");
-                alert.setMessage("Are you sure you want to delete?");
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.deletePrayer(mId);
-                        finish();
-                    }
-                });
+        if (item.getItemId() == R.id.menu_item_delete) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(PrayerDetailActivity.this);
+            alert.setTitle("Delete");
+            alert.setMessage("Are you sure you want to delete?");
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mPresenter.deletePrayer(mId);
+                    finish();
+                }
+            });
 
-                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
-                alert.show();
-                break;
+            alert.show();
         }
 
         return super.onOptionsItemSelected(item);

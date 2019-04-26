@@ -26,9 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class PrayerPresenterTest {
 
@@ -97,7 +95,7 @@ public class PrayerPresenterTest {
 
     @Test
     public void loadImageAndLoadIntoView() {
-        Call<BingResponse> mockedCall = Mockito.mock(Call.class);
+        Call mockedCall = Mockito.mock(Call.class);
 
         // When presenter starts load image is called on takeView.
 
