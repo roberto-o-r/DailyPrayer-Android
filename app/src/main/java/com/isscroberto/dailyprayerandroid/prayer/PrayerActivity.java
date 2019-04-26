@@ -221,14 +221,14 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void setLoadingIndicator(boolean active) {
         if (active) {
             layoutProgress.setVisibility(View.VISIBLE);
-            buttonFav.setVisibility(View.INVISIBLE);
+            buttonFav.hide();
         } else {
             layoutProgress.setVisibility(View.GONE);
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
-            buttonFav.setVisibility(View.VISIBLE);
+            buttonFav.show();
         }
     }
 
