@@ -1,5 +1,6 @@
 package com.isscroberto.dailyprayerandroid.prayer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -216,14 +217,14 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void setLoadingIndicator(boolean active) {
         if (active) {
             layoutProgress.setVisibility(View.VISIBLE);
-            buttonFav.hide();
+            buttonFav.setVisibility(View.INVISIBLE);
         } else {
             layoutProgress.setVisibility(View.GONE);
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
-            buttonFav.show();
+            buttonFav.setVisibility(View.VISIBLE);
         }
     }
 
@@ -236,7 +237,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void buttonFavOnClick(View view) {
         if (mPrayer != null) {
             // Create prayer id based on the date.
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             df.setTimeZone(TimeZone.getTimeZone("gmt"));
             String id = df.format(new Date());
 

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/menu_item_delete"
         android:icon="@drawable/ic_delete_white_24dp"
-        android:title="Delete"
+        android:title="@string/prayer_menu_delete"
         app:showAsAction="ifRoom" />
 </menu>

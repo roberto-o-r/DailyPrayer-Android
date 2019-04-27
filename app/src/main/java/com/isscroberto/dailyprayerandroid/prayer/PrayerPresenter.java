@@ -1,5 +1,7 @@
 package com.isscroberto.dailyprayerandroid.prayer;
 
+import android.annotation.SuppressLint;
+
 import com.isscroberto.dailyprayerandroid.data.models.BingResponse;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
@@ -51,7 +53,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
                         Item prayer = response.body().getChannel().getItem();
 
                     // Create prayer id based on the date.
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                     String id = df.format(new Date());
 

@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Prayer title. -->
@@ -42,7 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="60dp"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo"
+                android:contentDescription="@string/all_daily_prayer_logo" />
 
         </LinearLayout>
 
