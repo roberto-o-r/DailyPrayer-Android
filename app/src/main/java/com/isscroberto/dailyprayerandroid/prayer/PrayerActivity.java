@@ -196,9 +196,9 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         textTitle.setText(mPrayer.getTitle());
         textContent.setText(mPrayer.getDescription());
         if(mPrayer.getFav()) {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp));
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
         } else {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp));
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
         }
     }
 
@@ -217,14 +217,20 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void setLoadingIndicator(boolean active) {
         if (active) {
             layoutProgress.setVisibility(View.VISIBLE);
-            buttonFav.setVisibility(View.INVISIBLE);
+            ((View) buttonFav).setVisibility(View.GONE);
         } else {
             layoutProgress.setVisibility(View.GONE);
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
-            buttonFav.setVisibility(View.VISIBLE);
+            buttonFav.hide();
+            if(mPrayer.getFav()) {
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+            } else {
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+            }
+            buttonFav.show();
         }
     }
 
@@ -251,12 +257,12 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                 // Save prayer.
                 mPresenter.savePrayer(newPrayer);
                 mPrayer.setFav(true);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp));
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
             } else {
                 // Remove prayer from favorites.
                 mPresenter.deletePrayer(id);
                 mPrayer.setFav(false);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp));
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
             }
         }
     }
