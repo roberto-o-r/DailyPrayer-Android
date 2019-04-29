@@ -224,13 +224,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
-            buttonFav.hide();
-            if(mPrayer.getFav()) {
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
-            } else {
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
-            }
-            buttonFav.show();
+            redrawFab();
         }
     }
 
@@ -257,13 +251,13 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                 // Save prayer.
                 mPresenter.savePrayer(newPrayer);
                 mPrayer.setFav(true);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
             } else {
                 // Remove prayer from favorites.
                 mPresenter.deletePrayer(id);
                 mPrayer.setFav(false);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
             }
+
+            redrawFab();
         }
     }
 
@@ -277,6 +271,16 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         // Favorites.
         Intent intent = new Intent(this, PrayersSavedActivity.class);
         startActivityForResult(intent, 2);
+    }
+
+    private void redrawFab(){
+        buttonFav.hide();
+        if(mPrayer.getFav()) {
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+        } else {
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+        }
+        buttonFav.show();
     }
 
 }
