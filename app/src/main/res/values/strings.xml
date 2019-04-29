@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Daily Prayer</string>
+    <string name="all_by">by</string>
+    <string name="settings_authors"><![CDATA[\@isscroberto & @BereElias]]></string>
+    <string name="settings_remove_ads">Remove Ads</string>
+    <string name="settings_privacy">Privacy Policy</string>
+    <string name="settings_other_apps">other apps:</string>
+    <string name="main_menu_share">Share</string>
+    <string name="main_menu_favorites">Favorites</string>
+    <string name="main_menu_settings">Settings</string>
+    <string name="prayer_menu_delete">Delete</string>
+    <string name="prayer_header_image">Header Image</string>
+    <string name="all_daily_prayer_logo">Daily Prayer Logo</string>
+    <string name="settings_app_logo">App Logo</string>
 </resources>

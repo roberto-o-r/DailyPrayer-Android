@@ -1,10 +1,10 @@
 package com.isscroberto.dailyprayerandroid.prayer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +24,10 @@ import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.isscroberto.dailyprayerandroid.BuildConfig;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
-import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 import com.isscroberto.dailyprayerandroid.prayerssaved.PrayersSavedActivity;
 import com.isscroberto.dailyprayerandroid.settings.SettingsActivity;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.R;
-import com.isscroberto.dailyprayerandroid.data.source.ImageRemoteDataSource;
-import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -88,12 +84,12 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
         // Feedback.
         if (savedInstanceState == null) {
-            DefaultLayoutPromptView promptView = (DefaultLayoutPromptView) findViewById(R.id.prompt_view);
+            DefaultLayoutPromptView promptView = findViewById(R.id.prompt_view);
             Amplify.getSharedInstance().promptIfReady(promptView);
         }
 
         // Verify if ads are enabled.
-        Boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
         if (adsEnabled) {
             // Load Ad Banner.
             AdRequest adRequest;
@@ -178,15 +174,15 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             // Verify if ads are enabled.
-            Boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+            boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
             if (!adsEnabled) {
                 adView.setVisibility(View.GONE);
             }
         }
-        if (requestCode == 2) {
+        //if (requestCode == 2) {
             // Verify if prayer is favorited.
             //mPresenter.start();
-        }
+        //}
     }
 
     @Override
@@ -200,9 +196,9 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         textTitle.setText(mPrayer.getTitle());
         textContent.setText(mPrayer.getDescription());
         if(mPrayer.getFav()) {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp));
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
         } else {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp));
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
         }
     }
 
@@ -221,14 +217,14 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void setLoadingIndicator(boolean active) {
         if (active) {
             layoutProgress.setVisibility(View.VISIBLE);
-            buttonFav.hide();
+            ((View) buttonFav).setVisibility(View.GONE);
         } else {
             layoutProgress.setVisibility(View.GONE);
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
-            buttonFav.show();
+            redrawFab();
         }
     }
 
@@ -241,7 +237,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     public void buttonFavOnClick(View view) {
         if (mPrayer != null) {
             // Create prayer id based on the date.
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             df.setTimeZone(TimeZone.getTimeZone("gmt"));
             String id = df.format(new Date());
 
@@ -255,13 +251,13 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                 // Save prayer.
                 mPresenter.savePrayer(newPrayer);
                 mPrayer.setFav(true);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_white_24dp));
             } else {
                 // Remove prayer from favorites.
                 mPresenter.deletePrayer(id);
                 mPrayer.setFav(false);
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_white_24dp));
             }
+
+            redrawFab();
         }
     }
 
@@ -275,6 +271,16 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         // Favorites.
         Intent intent = new Intent(this, PrayersSavedActivity.class);
         startActivityForResult(intent, 2);
+    }
+
+    private void redrawFab(){
+        buttonFav.hide();
+        if(mPrayer.getFav()) {
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+        } else {
+            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+        }
+        buttonFav.show();
     }
 
 }

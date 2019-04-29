@@ -1,10 +1,7 @@
 package com.isscroberto.dailyprayerandroid.prayerssaved;
 
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
-import com.isscroberto.dailyprayerandroid.data.source.ImageRemoteDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
-import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
-import com.isscroberto.dailyprayerandroid.prayer.PrayerContract;
 
 import javax.inject.Inject;
 

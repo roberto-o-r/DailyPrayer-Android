@@ -1,5 +1,7 @@
 package com.isscroberto.dailyprayerandroid.prayer;
 
+import android.annotation.SuppressLint;
+
 import com.isscroberto.dailyprayerandroid.data.models.BingResponse;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
@@ -11,10 +13,10 @@ import com.isscroberto.dailyprayerandroid.di.ActivityScoped;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import retrofit2.Call;
@@ -45,13 +47,13 @@ public class PrayerPresenter implements PrayerContract.Presenter {
         mView.setLoadingIndicator(true);
         mPrayerDataSource.get(new Callback<RssResponse>() {
             @Override
-            public void onResponse(Call<RssResponse> call, Response<RssResponse> response) {
+            public void onResponse(@Nonnull Call<RssResponse> call, @Nonnull Response<RssResponse> response) {
                 // Verify that response is not empty.
                 if(response.body() != null) {
                         Item prayer = response.body().getChannel().getItem();
 
                     // Create prayer id based on the date.
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     df.setTimeZone(TimeZone.getTimeZone("gmt"));
                     String id = df.format(new Date());
 
@@ -72,7 +74,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             }
 
             @Override
-            public void onFailure(Call<RssResponse> call, Throwable t) {
+            public void onFailure(@Nonnull Call<RssResponse> call, @Nonnull Throwable t) {
                 mView.showError();
                 mView.setLoadingIndicator(false);
             }
@@ -83,7 +85,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
     public void loadImage() {
         mImageDataSource.get(new Callback<BingResponse>() {
             @Override
-            public void onResponse(Call<BingResponse> call, Response<BingResponse> response) {
+            public void onResponse(@Nonnull Call<BingResponse> call, @Nonnull Response<BingResponse> response) {
                 // Verify response.
                 if(response.body() != null) {
                     if (!response.body().getImages().isEmpty()) {
@@ -93,7 +95,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             }
 
             @Override
-            public void onFailure(Call<BingResponse> call, Throwable t) {
+            public void onFailure(@Nonnull Call<BingResponse> call, @Nonnull Throwable t) {
                 // Don't do nothing.
             }
         });

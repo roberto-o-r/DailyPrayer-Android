@@ -1,9 +1,8 @@
 package com.isscroberto.dailyprayerandroid.data.source;
 
-import com.isscroberto.dailyprayerandroid.data.models.Item;
+import android.support.annotation.NonNull;
+
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
-import com.isscroberto.dailyprayerandroid.data.models.RssResponse;
-import com.isscroberto.dailyprayerandroid.data.source.retrofit.PrayerApi;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,10 +10,6 @@ import javax.inject.Singleton;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 /**
  * Created by roberto.orozco on 21/09/2017.
@@ -23,7 +18,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 @Singleton
 public class PrayerLocalDataSource  {
 
-    private Realm mRealm;
+    private final Realm mRealm;
 
     @Inject
     public PrayerLocalDataSource() {
@@ -51,7 +46,7 @@ public class PrayerLocalDataSource  {
             mRealm.executeTransaction(new Realm.Transaction() {
 
                 @Override
-                public void execute(Realm realm) {
+                public void execute(@NonNull Realm realm) {
                     prayer.deleteFromRealm();
                 }
 
