@@ -65,7 +65,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
                     if (mPrayerLocalDataSource.get(id) != null) {
                         prayer.setFav(true);
                     }
-                    mView.showPrayer(prayer);
+                    if(mView != null) mView.showPrayer(prayer);
                 } else {
                     mView.showError();
                 }
@@ -75,8 +75,10 @@ public class PrayerPresenter implements PrayerContract.Presenter {
 
             @Override
             public void onFailure(@Nonnull Call<RssResponse> call, @Nonnull Throwable t) {
-                mView.showError();
-                mView.setLoadingIndicator(false);
+                if(mView != null) {
+                    mView.showError();
+                    mView.setLoadingIndicator(false);
+                }
             }
         });
     }
@@ -88,7 +90,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             public void onResponse(@Nonnull Call<BingResponse> call, @Nonnull Response<BingResponse> response) {
                 // Verify response.
                 if(response.body() != null) {
-                    if (!response.body().getImages().isEmpty()) {
+                    if (!response.body().getImages().isEmpty() && mView != null) {
                         mView.showImage("http://www.bing.com/" + response.body().getImages().get(0).getUrl());
                     }
                 }
