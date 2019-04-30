@@ -65,7 +65,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
                     if (mPrayerLocalDataSource.get(id) != null) {
                         prayer.setFav(true);
                     }
-                    mView.showPrayer(prayer);
+                    if(mView != null) mView.showPrayer(prayer);
                 } else {
                     mView.showError();
                 }
