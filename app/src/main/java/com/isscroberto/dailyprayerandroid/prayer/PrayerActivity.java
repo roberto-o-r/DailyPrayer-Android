@@ -152,10 +152,13 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "text");
                     mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
 
+                    // App's link to append.
+                    String link = "Daily Prayer https://play.google.com/store/apps/details?id=com.isscroberto.dailyprayerandroid";
+
                     Intent i = new Intent(android.content.Intent.ACTION_SEND);
                     i.setType("text/plain");
                     i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Daily Prayer");
-                    i.putExtra(android.content.Intent.EXTRA_TEXT, mPrayer.getDescription());
+                    i.putExtra(android.content.Intent.EXTRA_TEXT, mPrayer.getDescription() + link);
                     startActivity(Intent.createChooser(i, "Share this Daily Prayer"));
                 }
                 break;
