@@ -61,60 +61,12 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/text_more_apps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32sp"
-            android:text="@string/settings_other_apps"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_daily_bible"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/daily_bible_logo"
-                android:contentDescription="@string/settings_app_logo" />
-
-            <ImageView
-                android:id="@+id/image_daily_reflection"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/daily_reflection_logo"
-                android:contentDescription="@string/settings_app_logo"/>
-
-            <ImageView
-                android:id="@+id/image_one_movie"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/one_movie_logo"
-                android:contentDescription="@string/settings_app_logo"/>
-
-            <ImageView
-                android:id="@+id/image_one_breath"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/one_breath_logo"
-                android:contentDescription="@string/settings_app_logo"/>
-
-        </LinearLayout>
-    </LinearLayout>
+        android:text="@string/settings_other_apps"
+        android:textAlignment="center"/>
 
 </RelativeLayout>
