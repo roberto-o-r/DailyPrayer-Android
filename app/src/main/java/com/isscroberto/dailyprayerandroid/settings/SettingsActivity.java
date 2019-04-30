@@ -124,24 +124,9 @@ public class SettingsActivity extends AppCompatActivity implements BillingProces
         }
     }
 
-    @OnClick(R.id.image_daily_bible)
+    @OnClick(R.id.text_more_apps)
     public void imageDailyBibleOnClick(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.isscroberto.dailybibleandroid")));
-    }
-
-    @OnClick(R.id.image_daily_reflection)
-    public void imageDailyReflectionOnClick(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.isscroberto.dailyreflectionandroid")));
-    }
-
-    @OnClick(R.id.image_one_movie)
-    public void imageOneMovieOnClick(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.isscroberto.onemovie")));
-    }
-
-    @OnClick(R.id.image_one_breath)
-    public void imageOneBreathOnClick(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.isscroberto.onebreath")));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pub:isscroberto")));
     }
 
     @OnClick(R.id.text_privacy_policy)
