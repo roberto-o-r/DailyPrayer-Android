@@ -75,8 +75,10 @@ public class PrayerPresenter implements PrayerContract.Presenter {
 
             @Override
             public void onFailure(@Nonnull Call<RssResponse> call, @Nonnull Throwable t) {
-                mView.showError();
-                mView.setLoadingIndicator(false);
+                if(mView != null) {
+                    mView.showError();
+                    mView.setLoadingIndicator(false);
+                }
             }
         });
     }
