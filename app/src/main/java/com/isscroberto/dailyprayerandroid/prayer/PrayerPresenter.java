@@ -88,7 +88,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             public void onResponse(@Nonnull Call<BingResponse> call, @Nonnull Response<BingResponse> response) {
                 // Verify response.
                 if(response.body() != null) {
-                    if (!response.body().getImages().isEmpty()) {
+                    if (!response.body().getImages().isEmpty() && mView != null) {
                         mView.showImage("http://www.bing.com/" + response.body().getImages().get(0).getUrl());
                     }
                 }
