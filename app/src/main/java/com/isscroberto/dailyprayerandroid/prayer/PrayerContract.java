@@ -19,6 +19,7 @@ public interface PrayerContract {
     }
 
     interface Presenter extends BasePresenter<View> {
+        void reload();
         void loadPrayer();
         void loadImage();
         void savePrayer(Prayer prayer);

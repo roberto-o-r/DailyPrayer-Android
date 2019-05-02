@@ -118,6 +118,10 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
                 }
             });
         }
+
+        // Load prayer.
+        mPresenter.takeView(this);
+        mPresenter.reload();
     }
 
     @Override
@@ -175,17 +179,19 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            // Verify if ads are enabled.
-            boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
-            if (!adsEnabled) {
-                adView.setVisibility(View.GONE);
-            }
+        switch (requestCode) {
+            case 1:
+                // Verify if ads are enabled.
+                boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+                if (!adsEnabled) {
+                    adView.setVisibility(View.GONE);
+                }
+                break;
+            case 2:
+                // Verify if prayer is favorited.
+                mPresenter.reload();
+                break;
         }
-        //if (requestCode == 2) {
-            // Verify if prayer is favorited.
-            //mPresenter.start();
-        //}
     }
 
     @Override
@@ -198,7 +204,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         mPrayer.setDescription(Html.fromHtml(mPrayer.getDescription()).toString());
         textTitle.setText(mPrayer.getTitle());
         textContent.setText(mPrayer.getDescription());
-        if(mPrayer.getFav()) {
+        if (mPrayer.getFav()) {
             buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
         } else {
             buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
@@ -233,7 +239,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     @Override
     public void onRefresh() {
-        mPresenter.takeView(this);
+        mPresenter.reload();
     }
 
     @OnClick(R.id.button_fav)
@@ -244,7 +250,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
             df.setTimeZone(TimeZone.getTimeZone("gmt"));
             String id = df.format(new Date());
 
-            if(!mPrayer.getFav()) {
+            if (!mPrayer.getFav()) {
                 // Prepare prayer for storage.
                 Prayer newPrayer = new Prayer();
                 newPrayer.setId(id);
@@ -276,9 +282,9 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         startActivityForResult(intent, 2);
     }
 
-    private void redrawFab(){
+    private void redrawFab() {
         buttonFav.hide();
-        if(mPrayer.getFav()) {
+        if (mPrayer.getFav()) {
             buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
         } else {
             buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
