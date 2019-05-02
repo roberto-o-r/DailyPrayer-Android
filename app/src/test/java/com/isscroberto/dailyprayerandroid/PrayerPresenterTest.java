@@ -78,7 +78,8 @@ public class PrayerPresenterTest {
     public void loadPrayerAndLoadIntoView() {
         Call<RssResponse> mockedCall = Mockito.mock(Call.class);
 
-        // When presenter starts load prayer is called on takeView.
+        // When activity starts it request to reload prayer and image.
+        mPrayerPresenter.reload();
 
         // Then progress indicator is shown and prayer is requested from the remote repository.
         verify(mPrayerView).setLoadingIndicator(true);
@@ -97,7 +98,8 @@ public class PrayerPresenterTest {
     public void loadImageAndLoadIntoView() {
         Call mockedCall = Mockito.mock(Call.class);
 
-        // When presenter starts load image is called on takeView.
+        // When activity starts it request to reload prayer and image.
+        mPrayerPresenter.reload();
 
         // Capture callback and invoke with mock image.
         verify(mImageRemoteDataSource).get(mBingResponseCallbackCaptor.capture());

@@ -43,6 +43,12 @@ public class PrayerPresenter implements PrayerContract.Presenter {
     }
 
     @Override
+    public void reload() {
+        loadPrayer();
+        loadImage();
+    }
+
+    @Override
     public void loadPrayer() {
         mView.setLoadingIndicator(true);
         mPrayerDataSource.get(new Callback<RssResponse>() {
@@ -116,8 +122,6 @@ public class PrayerPresenter implements PrayerContract.Presenter {
     @Override
     public void takeView(PrayerContract.View prayerView) {
         this.mView = prayerView;
-        loadPrayer();
-        loadImage();
     }
 
     @Override
