@@ -25,6 +25,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.isscroberto.dailyprayerandroid.BuildConfig;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.prayerssaved.PrayersSavedActivity;
+import com.isscroberto.dailyprayerandroid.settings.PreferenceActivity;
 import com.isscroberto.dailyprayerandroid.settings.SettingsActivity;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.R;
@@ -272,7 +273,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     private void navigateToSettings() {
         // Settings.
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, PreferenceActivity.class);
         startActivityForResult(intent, 1);
     }
 
