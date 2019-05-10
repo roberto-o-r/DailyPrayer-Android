@@ -1,6 +1,6 @@
 package com.isscroberto.dailyprayerandroid.data.source;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 
