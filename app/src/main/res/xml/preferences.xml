@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory
-        android:title="General"
-        app:iconSpaceReserved="false">
+    <PreferenceCategory>
         <CheckBoxPreference
             android:key="checkbox"
             android:summary="Tap to set a daily reminder"
@@ -14,9 +12,7 @@
             android:title="@string/settings_remove_ads"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="Information"
-        app:iconSpaceReserved="false">
+    <PreferenceCategory>
         <Preference
             android:key="privacy"
             android:title="@string/settings_privacy"
