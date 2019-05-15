@@ -7,8 +7,8 @@
         android:key="preference_general">
         <CheckBoxPreference
             android:key="preference_reminder"
-            android:summary="Tap to set a daily reminder"
-            android:title="Prayer Reminder"
+            android:summary="@string/settings_prayer_reminder_summary"
+            android:title="@string/settings_prayer_reminder"
             app:iconSpaceReserved="false" />
         <Preference
             android:key="preference_ads"
@@ -26,8 +26,8 @@
             app:iconSpaceReserved="false" />
         <Preference
             android:key="preference_version"
-            android:summary="v19"
-            android:title="Version"
+            android:summary="@string/settings_version"
+            android:title="@string/settings_version_title"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>

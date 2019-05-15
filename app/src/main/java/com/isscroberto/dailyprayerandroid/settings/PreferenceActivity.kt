@@ -3,6 +3,7 @@ package com.isscroberto.dailyprayerandroid.settings
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.preference.PreferenceCategory
@@ -73,6 +74,19 @@ class PreferenceActivity : AppCompatActivity() {
                 var preferenceCategory = findPreference("preference_general") as PreferenceCategory
                 preferenceCategory.removePreference(preferenceAds)
             }
+
+            // Add click listener to preferences.
+            var preferencePrivacy = findPreference("preference_privacy")
+            preferencePrivacy.setOnPreferenceClickListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://isscroberto.com/daily-bible-privacy-policy/")))
+                true
+            }
+            var preferenceMoreApps = findPreference("preference_apps")
+            preferenceMoreApps.setOnPreferenceClickListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pub:isscroberto")))
+                true
+            }
+
         }
 
         override fun onDestroy() {
