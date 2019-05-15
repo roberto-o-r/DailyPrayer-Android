@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+    android:key="preference_screen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory>
+    <PreferenceCategory
+        android:key="preference_general">
         <CheckBoxPreference
-            android:key="checkbox"
+            android:key="preference_reminder"
             android:summary="Tap to set a daily reminder"
             android:title="Prayer Reminder"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="ads"
+            android:key="preference_ads"
             android:title="@string/settings_remove_ads"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory>
         <Preference
-            android:key="privacy"
+            android:key="preference_privacy"
             android:title="@string/settings_privacy"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="apps"
+            android:key="preference_apps"
             android:title="@string/settings_other_apps"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="version"
+            android:key="preference_version"
             android:summary="v19"
             android:title="Version"
             app:iconSpaceReserved="false" />
