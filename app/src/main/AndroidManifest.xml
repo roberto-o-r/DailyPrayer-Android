@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".settings.PreferenceActivity"></activity>
+        <activity android:name=".preference.PreferenceActivity"></activity>
         <activity
             android:name=".splash.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -28,7 +28,7 @@
         <activity
             android:name=".prayer.PrayerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".settings.SettingsActivity" />
+        <activity android:name=".preference.SettingsActivity" />
         <activity android:name=".prayerssaved.PrayersSavedActivity" />
         <activity android:name=".prayerdetail.PrayerDetailActivity" />
 

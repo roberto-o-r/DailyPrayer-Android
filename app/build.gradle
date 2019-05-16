@@ -55,6 +55,7 @@ dependencies {
     implementation 'io.realm:android-adapters:2.1.0'
     implementation 'com.google.dagger:dagger:2.11'
     implementation 'com.google.dagger:dagger-android-support:2.11'
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.0'
 
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'

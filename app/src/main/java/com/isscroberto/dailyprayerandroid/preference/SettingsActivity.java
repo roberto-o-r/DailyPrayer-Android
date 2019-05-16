@@ -1,4 +1,4 @@
-package com.isscroberto.dailyprayerandroid.settings;
+package com.isscroberto.dailyprayerandroid.preference;
 
 import android.app.Activity;
 import android.content.Intent;

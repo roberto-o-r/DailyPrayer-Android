@@ -25,7 +25,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.isscroberto.dailyprayerandroid.BuildConfig;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.prayerssaved.PrayersSavedActivity;
-import com.isscroberto.dailyprayerandroid.settings.PreferenceActivity;
+import com.isscroberto.dailyprayerandroid.preference.PreferenceActivity;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.R;
 import com.squareup.picasso.Picasso;

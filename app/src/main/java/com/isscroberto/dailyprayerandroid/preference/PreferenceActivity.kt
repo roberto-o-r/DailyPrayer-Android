@@ -1,11 +1,13 @@
-package com.isscroberto.dailyprayerandroid.settings
+package com.isscroberto.dailyprayerandroid.preference
 
 import android.app.Activity
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TimePicker
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.anjlab.android.iab.v3.BillingProcessor
@@ -13,8 +15,7 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.isscroberto.dailyprayerandroid.R
 import android.widget.Toast
 import com.isscroberto.dailyprayerandroid.BuildConfig
-import androidx.preference.Preference
-
+import java.util.*
 
 class PreferenceActivity : AppCompatActivity() {
 
@@ -47,7 +48,7 @@ class PreferenceActivity : AppCompatActivity() {
         fragment.onActivityResult(requestCode, resultCode, data)
     }
 
-    class SettingsFragment : PreferenceFragmentCompat(), BillingProcessor.IBillingHandler {
+    class SettingsFragment : PreferenceFragmentCompat(), BillingProcessor.IBillingHandler, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
 
         private var mBillingProcessor: BillingProcessor? = null
 
@@ -84,6 +85,13 @@ class PreferenceActivity : AppCompatActivity() {
             var preferenceMoreApps = findPreference("preference_apps")
             preferenceMoreApps.setOnPreferenceClickListener {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pub:isscroberto")))
+                true
+            }
+            var preferenceReminder = findPreference("preference_reminder")
+            preferenceReminder.setOnPreferenceClickListener {
+                val now = Calendar.getInstance()
+                val dpd = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(this@SettingsFragment, true)
+                dpd.show(fragmentManager, "Timepickerdialog")
                 true
             }
 
@@ -123,6 +131,10 @@ class PreferenceActivity : AppCompatActivity() {
                 disableAds()
                 Toast.makeText(activity, "Ads Removed!", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        override fun onTimeSet(view: com.wdullaer.materialdatetimepicker.time.TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         fun disableAds() {
