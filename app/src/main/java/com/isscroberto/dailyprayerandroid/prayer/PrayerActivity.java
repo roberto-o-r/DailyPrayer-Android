@@ -2,11 +2,11 @@ package com.isscroberto.dailyprayerandroid.prayer;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.isscroberto.dailyprayerandroid.BuildConfig;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.prayerssaved.PrayersSavedActivity;
-import com.isscroberto.dailyprayerandroid.settings.SettingsActivity;
+import com.isscroberto.dailyprayerandroid.preference.PreferenceActivity;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
 import com.isscroberto.dailyprayerandroid.R;
 import com.squareup.picasso.Picasso;
@@ -272,7 +272,7 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     private void navigateToSettings() {
         // Settings.
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, PreferenceActivity.class);
         startActivityForResult(intent, 1);
     }
 

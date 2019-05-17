@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="preference_category_general">preference_category_general</string>
+    <string name="preference_reminder">preference_reminder</string>
+    <string name="preference_ads">preference_ads</string>
+    <string name="preference_privacy">preference_privacy</string>
+    <string name="preference_apps">preference_apps</string>
+    <string name="preference_version">preference_version</string>
+</resources>

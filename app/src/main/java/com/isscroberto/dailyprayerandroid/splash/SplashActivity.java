@@ -1,7 +1,7 @@
 package com.isscroberto.dailyprayerandroid.splash;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.ads.MobileAds;
 import com.isscroberto.dailyprayerandroid.R;
