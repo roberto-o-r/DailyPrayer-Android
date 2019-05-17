@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".preference.PreferenceActivity"></activity>
+        <activity android:name=".preference.PreferenceActivity"/>
         <activity
             android:name=".splash.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -31,7 +31,9 @@
         <activity android:name=".preference.SettingsActivity" />
         <activity android:name=".prayerssaved.PrayersSavedActivity" />
         <activity android:name=".prayerdetail.PrayerDetailActivity" />
-
+        <receiver
+            android:name=".alarm.AlarmReceiver"
+            android:enabled="true" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ad_mob_app_id" />

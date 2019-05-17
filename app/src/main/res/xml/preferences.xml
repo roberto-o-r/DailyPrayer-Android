@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-    android:key="preference_screen"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:key="preference_general">
+        android:key="@string/preference_category_general">
         <CheckBoxPreference
-            android:key="preference_reminder"
+            android:key="@string/preference_reminder"
             android:summary="@string/settings_prayer_reminder_summary"
             android:title="@string/settings_prayer_reminder"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="preference_ads"
+            android:key="@string/preference_ads"
             android:title="@string/settings_remove_ads"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory>
         <Preference
-            android:key="preference_privacy"
+            android:key="@string/preference_privacy"
             android:title="@string/settings_privacy"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="preference_apps"
+            android:key="@string/preference_apps"
             android:title="@string/settings_other_apps"
             app:iconSpaceReserved="false" />
         <Preference
-            android:key="preference_version"
+            android:key="@string/preference_version"
             android:summary="@string/settings_version"
             android:title="@string/settings_version_title"
             app:iconSpaceReserved="false" />

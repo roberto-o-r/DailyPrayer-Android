@@ -16,4 +16,8 @@
     <string name="settings_version_title">Version</string>
     <string name="settings_prayer_reminder">Prayer Reminder</string>
     <string name="settings_prayer_reminder_summary">Tap to set a daily reminder</string>
+    <string name="action_prayer_reminder">Tap to set a daily reminder</string>
+    <string name="notification_channel_description">App notification channel</string>
+    <string name="notification_reminder_title">Daily Prayer Reminder</string>
+    <string name="notification_reminder_message">It\'s time to read your daily prayer.</string>
 </resources>
