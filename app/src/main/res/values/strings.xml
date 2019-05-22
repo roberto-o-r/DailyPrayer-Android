@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Daily Prayer</string>
-    <string name="all_by">by</string>
-    <string name="settings_authors"><![CDATA[\@isscroberto & @BereElias]]></string>
     <string name="settings_remove_ads">Remove Ads</string>
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_other_apps">More apps by isscroberto</string>
@@ -11,7 +9,6 @@
     <string name="prayer_menu_delete">Delete</string>
     <string name="prayer_header_image">Header Image</string>
     <string name="all_daily_prayer_logo">Daily Prayer Logo</string>
-    <string name="settings_app_logo">App Logo</string>
     <string name="settings_version">v19</string>
     <string name="settings_version_title">Version</string>
     <string name="settings_prayer_reminder">Prayer Reminder</string>

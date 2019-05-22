@@ -76,7 +76,8 @@ public class PrayerPresenter implements PrayerContract.Presenter {
                     mView.showError();
                 }
 
-                mView.setLoadingIndicator(false);
+                if(mView != null) mView.setLoadingIndicator(false);
+
             }
 
             @Override

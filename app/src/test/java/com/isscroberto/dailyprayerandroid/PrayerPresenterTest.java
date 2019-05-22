@@ -69,7 +69,7 @@ public class PrayerPresenterTest {
 
         // Prepare response with mock image.
         IMAGE = new BingResponse();
-        IMAGE.setImages(new ArrayList<Image>());
+        IMAGE.setImages(new ArrayList<>());
         IMAGE.getImages().add(new Image());
         IMAGE.getImages().get(0).setUrl("image.jpg");
     }

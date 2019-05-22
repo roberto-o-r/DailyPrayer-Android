@@ -17,18 +17,13 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".preference.PreferenceActivity"/>
         <activity
-            android:name=".splash.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:name=".prayer.PrayerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".prayer.PrayerActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".preference.SettingsActivity" />
         <activity android:name=".prayerssaved.PrayersSavedActivity" />
         <activity android:name=".prayerdetail.PrayerDetailActivity" />
         <receiver

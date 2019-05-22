@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.isscroberto.dailyprayerandroid.R
 import com.isscroberto.dailyprayerandroid.prayer.PrayerActivity
 
@@ -29,13 +30,14 @@ object NotificationHelper {
 
         val channelId = "${context.packageName}-${context.getString(R.string.app_name)}"
         val notificationBuilder = NotificationCompat.Builder(context, channelId).apply {
-            setSmallIcon(R.drawable.ic_logo)
+            setSmallIcon(R.drawable.ic_small)
             setContentTitle(title)
             setContentText(message)
             setAutoCancel(autoCancel)
             setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
             priority = NotificationCompat.PRIORITY_DEFAULT
             setAutoCancel(autoCancel)
+            color = ContextCompat.getColor(context, R.color.colorBook)
 
             val intent = Intent(context, PrayerActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

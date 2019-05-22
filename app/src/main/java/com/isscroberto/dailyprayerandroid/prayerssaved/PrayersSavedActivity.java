@@ -121,18 +121,15 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
                 textTitle = v.findViewById(R.id.text_title);
                 textPreview = v.findViewById(R.id.text_preview);
 
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), PrayerDetailActivity.class);
-                        Prayer prayer = getItem(getAdapterPosition());
-                        if(prayer != null) {
-                            intent.putExtra("id", prayer.getId());
-                            intent.putExtra("title", prayer.getTitle());
-                            intent.putExtra("description", prayer.getDescription());
-                        }
-                        mContext.startActivity(intent);
+                v.setOnClickListener(v1 -> {
+                    Intent intent = new Intent(v1.getContext(), PrayerDetailActivity.class);
+                    Prayer prayer = getItem(getAdapterPosition());
+                    if(prayer != null) {
+                        intent.putExtra("id", prayer.getId());
+                        intent.putExtra("title", prayer.getTitle());
+                        intent.putExtra("description", prayer.getDescription());
                     }
+                    mContext.startActivity(intent);
                 });
             }
         }

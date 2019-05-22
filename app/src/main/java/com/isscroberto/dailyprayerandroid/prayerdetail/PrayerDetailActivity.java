@@ -1,6 +1,5 @@
 package com.isscroberto.dailyprayerandroid.prayerdetail;
 
-import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
@@ -115,20 +114,12 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
             AlertDialog.Builder alert = new AlertDialog.Builder(PrayerDetailActivity.this);
             alert.setTitle("Delete");
             alert.setMessage("Are you sure you want to delete?");
-            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mPresenter.deletePrayer(mId);
-                    finish();
-                }
+            alert.setPositiveButton("Yes", (dialog, which) -> {
+                mPresenter.deletePrayer(mId);
+                finish();
             });
 
-            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            alert.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
 
             alert.show();
         }

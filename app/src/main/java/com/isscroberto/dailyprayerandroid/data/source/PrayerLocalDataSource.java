@@ -1,7 +1,5 @@
 package com.isscroberto.dailyprayerandroid.data.source;
 
-import androidx.annotation.NonNull;
-
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 
 import javax.inject.Inject;
@@ -43,14 +41,7 @@ public class PrayerLocalDataSource  {
     public void delete (String id) {
         final Prayer prayer = mRealm.where(Prayer.class).equalTo("Id", id).findFirst();
         if(prayer != null) {
-            mRealm.executeTransaction(new Realm.Transaction() {
-
-                @Override
-                public void execute(@NonNull Realm realm) {
-                    prayer.deleteFromRealm();
-                }
-
-            });
+            mRealm.executeTransaction(realm -> prayer.deleteFromRealm());
         }
     }
 
