@@ -2,6 +2,8 @@ package com.isscroberto.dailyprayerandroid.prayer;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -72,6 +74,9 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prayer);
+
+        // AdMob.
+        MobileAds.initialize(this, getString(R.string.ad_mob_app_id));
 
         // Bind views with Butter Knife.
         ButterKnife.bind(this);
