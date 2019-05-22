@@ -9,8 +9,8 @@ android {
         applicationId "com.isscroberto.dailyprayerandroid"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 14
-        versionName "18.10.01"
+        versionCode 15
+        versionName "19.05.22"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
