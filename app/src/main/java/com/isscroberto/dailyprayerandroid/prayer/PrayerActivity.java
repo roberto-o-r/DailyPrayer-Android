@@ -289,10 +289,12 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     private void redrawFab() {
         buttonFav.hide();
-        if (mPrayer.getFav()) {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
-        } else {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+        if(mPrayer != null) {
+            if (mPrayer.getFav()) {
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+            } else {
+                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+            }
         }
         buttonFav.show();
     }
