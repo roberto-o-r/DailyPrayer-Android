@@ -14,6 +14,7 @@ public interface PrayerContract {
     interface View extends BaseView<Presenter> {
         void showPrayer(Item prayer);
         void showError();
+        void logError(String Message);
         void showImage(String url);
         void setLoadingIndicator(boolean active);
     }

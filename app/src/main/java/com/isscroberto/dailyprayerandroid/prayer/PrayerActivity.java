@@ -223,6 +223,14 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     }
 
     @Override
+    public void logError(String message) {
+        // Log error.
+        Bundle params = new Bundle();
+        params.putString("error_message", message);
+        mFirebaseAnalytics.logEvent("prayer_failure", params);
+    }
+
+    @Override
     public void showImage(String url) {
         Picasso.with(this).load(url).fit().centerCrop().into(imageBack);
     }

@@ -84,6 +84,7 @@ public class PrayerPresenter implements PrayerContract.Presenter {
             public void onFailure(@Nonnull Call<RssResponse> call, @Nonnull Throwable t) {
                 if(mView != null) {
                     mView.showError();
+                    mView.logError(t.getMessage());
                     mView.setLoadingIndicator(false);
                 }
             }

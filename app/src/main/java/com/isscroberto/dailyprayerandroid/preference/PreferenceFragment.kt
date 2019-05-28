@@ -13,6 +13,7 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.isscroberto.dailyprayerandroid.BuildConfig
 import com.isscroberto.dailyprayerandroid.R
 import com.isscroberto.dailyprayerandroid.alarm.AlarmReceiver
@@ -20,6 +21,7 @@ import java.util.*
 
 class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBillingHandler, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private var mBillingProcessor: BillingProcessor? = null
 
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
@@ -139,10 +141,17 @@ class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBilling
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
 
         // Update summary.
+        val time = String.format("%02d:%02d", hourOfDay, minute)
         val editor = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
-        editor.putString("ReminderTime", (String.format("%02d:%02d", hourOfDay, minute)))
+        editor.putString("ReminderTime", time)
         editor.apply()
         setPreferenceReminderSummary()
+
+        // Log event.
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context!!)
+        val bundle = Bundle()
+        bundle.putString("time", time)
+        firebaseAnalytics.logEvent("set_reminder", bundle)
     }
 
     private fun cancelReminder() {
