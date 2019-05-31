@@ -23,7 +23,7 @@ public class ImageRemoteDataSource implements BaseDataSource<BingResponse> {
 
     @Override
     public void get(final Callback<BingResponse> callback) {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://www.bing.com/").addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://www.bing.com/").addConverterFactory(GsonConverterFactory.create()).build();
         ImageApi api = retrofit.create(ImageApi.class);
         Call<BingResponse> apiCall = api.get();
         apiCall.enqueue(callback);
