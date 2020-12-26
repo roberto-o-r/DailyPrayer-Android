@@ -1,45 +1,34 @@
 package com.isscroberto.dailyprayerandroid.prayerdetail;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.isscroberto.dailyprayerandroid.BuildConfig;
+import com.google.android.gms.ads.LoadAdError;
 import com.isscroberto.dailyprayerandroid.R;
+import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
+import com.isscroberto.dailyprayerandroid.databinding.ActivityPrayerDetailBinding;
 
-import javax.inject.Inject;
+public class PrayerDetailActivity extends AppCompatActivity implements PrayerDetailContract.View {
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import dagger.android.support.DaggerAppCompatActivity;
-
-public class PrayerDetailActivity extends DaggerAppCompatActivity implements PrayerDetailContract.View {
-
-    //----- UI Bindings.
-    @BindView(R.id.text_title)
-    TextView textTitle;
-    @BindView(R.id.text_content)
-    TextView textContent;
-    @BindView(R.id.ad_view)
-    AdView adView;
-
-    @Inject
     PrayerDetailContract.Presenter mPresenter;
     private String mId;
+    private ActivityPrayerDetailBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prayer_detail);
 
-        // Bind views with Butter Knife.
-        ButterKnife.bind(this);
+        // Binding.
+        binding = ActivityPrayerDetailBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         // Setup toolbar.
         if(getSupportActionBar() != null) {
@@ -47,35 +36,8 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
             getSupportActionBar().setTitle("Saved Prayers");
         }
 
-        // Verify if ads are enabled.
-        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
-        if (adsEnabled) {
-            // Load Ad Banner.
-            AdRequest adRequest;
-            if (BuildConfig.DEBUG) {
-                adRequest = new AdRequest.Builder()
-                        .addTestDevice(getString(R.string.test_device))
-                        .build();
-            } else {
-                adRequest = new AdRequest.Builder().build();
-            }
-            adView.loadAd(adRequest);
-
-            adView.setAdListener(new AdListener() {
-
-                @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                    adView.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAdFailedToLoad(int i) {
-                    super.onAdFailedToLoad(i);
-                    adView.setVisibility(View.GONE);
-                }
-            });
-        }
+        // Ads.
+        setupAds();
 
         // Get prayer.
         mId = getIntent().getStringExtra("id");
@@ -83,8 +45,12 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
         String description = getIntent().getStringExtra("description");
 
         // Show prayer.
-        textTitle.setText(title);
-        textContent.setText(description);
+        binding.textTitle.setText(title);
+        binding.textContent.setText(description);
+
+        // Create the presenter.
+        mPresenter = new PrayerDetailPresenter(new PrayerLocalDataSource());
+        mPresenter.takeView(this);
     }
 
     @Override
@@ -131,5 +97,30 @@ public class PrayerDetailActivity extends DaggerAppCompatActivity implements Pra
     public boolean onSupportNavigateUp(){
         finish();
         return true;
+    }
+
+    private void setupAds() {
+        // Verify if ads are enabled.
+        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+        if (adsEnabled) {
+            // Load Ad Banner.
+            AdRequest adRequest = new AdRequest.Builder().build();
+            binding.adView.loadAd(adRequest);
+
+            binding.adView.setAdListener(new AdListener() {
+
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    binding.adView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdFailedToLoad(LoadAdError adError) {
+                    super.onAdFailedToLoad(adError);
+                    binding.adView.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 }

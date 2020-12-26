@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,47 +16,43 @@ import android.widget.TextView;
 
 import com.isscroberto.dailyprayerandroid.R;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
+import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
+import com.isscroberto.dailyprayerandroid.databinding.ActivityPrayersSavedBinding;
 import com.isscroberto.dailyprayerandroid.prayerdetail.PrayerDetailActivity;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import dagger.android.support.DaggerAppCompatActivity;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
-public class PrayersSavedActivity extends DaggerAppCompatActivity implements PrayersSavedContract.View {
+public class PrayersSavedActivity extends AppCompatActivity implements PrayersSavedContract.View {
 
-    //----- Bindings.
-    @BindView(R.id.list_prayers)
-    RecyclerView listPrayers;
-
-    @Inject
     PrayersSavedContract.Presenter mPresenter;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RealmResults<Prayer> mPrayers;
+    private ActivityPrayersSavedBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prayers_saved);
 
-        // Bind views with Butter Knife.
-        ButterKnife.bind(this);
+        // Binding.
+        binding = ActivityPrayersSavedBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         // Setup toolbar.
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Prayers Saved");
         }
 
         // Setup recycler view.
-        listPrayers.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        listPrayers.setLayoutManager(mLayoutManager);
+        binding.listPrayers.setHasFixedSize(true);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        binding.listPrayers.setLayoutManager(mLayoutManager);
+
+        // Create the presenter.
+        mPresenter = new PrayersSavedPresenter(new PrayerLocalDataSource());
+        mPresenter.takeView(this);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
@@ -80,9 +79,8 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
     @Override
     public void showPrayers(RealmResults<Prayer> prayers) {
         // Setup recycler view adapter.
-        mPrayers = prayers;
-        mAdapter = new PrayerAdapter(this, mPrayers);
-        listPrayers.setAdapter(mAdapter);
+        RecyclerView.Adapter<PrayerAdapter.ViewHolder> mAdapter = new PrayerAdapter(this, prayers);
+        binding.listPrayers.setAdapter(mAdapter);
     }
 
     private static class PrayerAdapter extends RealmRecyclerViewAdapter<Prayer, PrayerAdapter.ViewHolder> {
@@ -95,7 +93,8 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
         }
 
         @Override
-        public @Nonnull ViewHolder onCreateViewHolder(@Nonnull ViewGroup parent, int viewType) {
+        public @Nonnull
+        ViewHolder onCreateViewHolder(@Nonnull ViewGroup parent, int viewType) {
             // Create a new view.
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_prayer, parent, false);
 
@@ -105,7 +104,7 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
         @Override
         public void onBindViewHolder(@Nonnull ViewHolder holder, int position) {
             final Prayer prayer = getItem(position);
-            if(prayer != null) {
+            if (prayer != null) {
                 holder.textTitle.setText(prayer.getTitle());
                 holder.textPreview.setText(getExcerpt(prayer.getDescription()));
             }
@@ -124,7 +123,7 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
                 v.setOnClickListener(v1 -> {
                     Intent intent = new Intent(v1.getContext(), PrayerDetailActivity.class);
                     Prayer prayer = getItem(getAdapterPosition());
-                    if(prayer != null) {
+                    if (prayer != null) {
                         intent.putExtra("id", prayer.getId());
                         intent.putExtra("title", prayer.getTitle());
                         intent.putExtra("description", prayer.getDescription());
@@ -136,7 +135,7 @@ public class PrayersSavedActivity extends DaggerAppCompatActivity implements Pra
 
         private String getExcerpt(String input) {
             String excerpt = input;
-            if(excerpt.lastIndexOf(" ") > -1 && excerpt.length() > 99) {
+            if (excerpt.lastIndexOf(" ") > -1 && excerpt.length() > 99) {
                 excerpt = excerpt.substring(0, 100);
                 excerpt = excerpt.substring(0, excerpt.lastIndexOf(" "));
             }

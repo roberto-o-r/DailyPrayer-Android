@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.isscroberto.dailyprayerandroid.prayerdetail.PrayerDetailActivity"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    tools:context="com.isscroberto.dailyprayerandroid.prayerdetail.PrayerDetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,8 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="16dp"
+                android:paddingRight="16dp"
                 android:textSize="20sp" />
 
             <!-- Prayer content. -->
@@ -41,23 +41,32 @@
                 android:id="@+id/image_prayer"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginBottom="60dp"
-                android:src="@drawable/ic_logo"
-                android:contentDescription="@string/all_daily_prayer_logo" />
+                android:layout_marginBottom="68dp"
+                android:contentDescription="@string/all_daily_prayer_logo"
+                android:src="@drawable/ic_logo" />
 
         </LinearLayout>
 
     </ScrollView>
 
     <!-- Banner Ad. -->
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ad_view"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ad_wrapper"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/ad_unit_id"/>
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:visibility="gone">
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ad_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/ad_unit_id" />
+    </LinearLayout>
 
 </RelativeLayout>

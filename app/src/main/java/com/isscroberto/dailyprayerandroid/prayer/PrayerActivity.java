@@ -3,29 +3,35 @@ package com.isscroberto.dailyprayerandroid.prayer;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
+
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.stkent.amplify.prompt.DefaultLayoutPromptView;
 import com.github.stkent.amplify.tracking.Amplify;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.isscroberto.dailyprayerandroid.BuildConfig;
+import com.isscroberto.dailyprayerandroid.analytics.AnalyticsHelper;
+import com.isscroberto.dailyprayerandroid.analytics.EventType;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
+import com.isscroberto.dailyprayerandroid.data.source.ImageRemoteDataSource;
+import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
+import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
+import com.isscroberto.dailyprayerandroid.databinding.ActivityPrayerBinding;
 import com.isscroberto.dailyprayerandroid.prayerssaved.PrayersSavedActivity;
 import com.isscroberto.dailyprayerandroid.preference.PreferenceActivity;
 import com.isscroberto.dailyprayerandroid.data.models.Item;
@@ -35,57 +41,31 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
 
-import javax.inject.Inject;
+public class PrayerActivity extends AppCompatActivity implements PrayerContract.View, SwipeRefreshLayout.OnRefreshListener, TextToSpeech.OnInitListener {
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import dagger.android.support.DaggerAppCompatActivity;
-
-public class PrayerActivity extends DaggerAppCompatActivity implements PrayerContract.View, SwipeRefreshLayout.OnRefreshListener {
-
-    //----- UI Bindings.
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.image_back)
-    ImageView imageBack;
-    @BindView(R.id.layout_progress)
-    RelativeLayout layoutProgress;
-    @BindView(R.id.text_title)
-    TextView textTitle;
-    @BindView(R.id.text_content)
-    TextView textContent;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.ad_view)
-    AdView adView;
-    @BindView(R.id.button_fav)
-    FloatingActionButton buttonFav;
-
-    @Inject
-    PrayerPresenter mPresenter;
-    @Inject
-    FirebaseAnalytics mFirebaseAnalytics;
-    private Item mPrayer;
+    private PrayerContract.Presenter presenter;
+    private FirebaseAnalytics firebaseAnalytics;
+    private Item prayer;
+    private ActivityPrayerBinding binding;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prayer);
 
-        // AdMob.
-        MobileAds.initialize(this, getString(R.string.ad_mob_app_id));
-
-        // Bind views with Butter Knife.
-        ButterKnife.bind(this);
+        // Binding.
+        binding = ActivityPrayerBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+        binding.buttonFav.setOnClickListener((View v) -> buttonFavOnClick(view));
+        binding.buttonPlay.setOnClickListener((View v) -> playPrayer());
 
         // Setup toolbar.
-        setSupportActionBar(toolbar);
-
-        // Setup swipe refresh layout.
-        swipeRefreshLayout.setOnRefreshListener(this);
+        setSupportActionBar(binding.toolbar);
 
         // Feedback.
         if (savedInstanceState == null) {
@@ -93,133 +73,117 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
             Amplify.getSharedInstance().promptIfReady(promptView);
         }
 
-        // Verify if ads are enabled.
-        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
-        if (adsEnabled) {
-            // Load Ad Banner.
-            AdRequest adRequest;
-            if (BuildConfig.DEBUG) {
-                adRequest = new AdRequest.Builder()
-                        .addTestDevice(getString(R.string.test_device))
+        // Setup swipe refresh layout.
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
 
-                        .build();
-            } else {
-                adRequest = new AdRequest.Builder().build();
-            }
-            adView.loadAd(adRequest);
+        // Setup text to speech.
+        tts = new TextToSpeech(this, this);
 
-            adView.setAdListener(new AdListener() {
+        // AdMob.
+        MobileAds.initialize(this, initializationStatus -> setupAds());
 
-                @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                    adView.setVisibility(View.VISIBLE);
-                }
+        // Analytics.
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-                @Override
-                public void onAdFailedToLoad(int i) {
-                    super.onAdFailedToLoad(i);
-                    adView.setVisibility(View.GONE);
-                }
-            });
-        }
+        // Create the presenter.
+        presenter = new PrayerPresenter(new PrayerRemoteDataSource(), new PrayerLocalDataSource(), new ImageRemoteDataSource());
+        presenter.takeView(this);
 
-        // Load prayer.
-        mPresenter.takeView(this);
-        mPresenter.reload();
+        // Load the prayer.
+        presenter.reload();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.takeView(this);
+        presenter.takeView(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        tts.stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.dropView();
+        presenter.dropView();
+        tts.shutdown();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.main, menu);
-
         // Return true to display menu
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_share:
-                if (mPrayer != null) {
-                    // Log share event.
-                    Bundle bundle = new Bundle();
-                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "prayer");
-                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "text");
-                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
+        int id = item.getItemId();
+        if (id == R.id.menu_item_share) {
+            if (prayer != null) {
+                // Log share event.
+                AnalyticsHelper.LogEvent(firebaseAnalytics, EventType.Share, null);
 
-                    // App's link to append.
-                    String link = "Daily Prayer https://play.google.com/store/apps/details?id=com.isscroberto.dailyprayerandroid";
+                // App's link to append.
+                String link = "Daily Prayer https://play.google.com/store/apps/details?id=com.isscroberto.dailyprayerandroid";
 
-                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
-                    i.setType("text/plain");
-                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Daily Prayer");
-                    i.putExtra(android.content.Intent.EXTRA_TEXT, mPrayer.getDescription() + link);
-                    startActivity(Intent.createChooser(i, "Share this Daily Prayer"));
-                }
-                break;
-            case R.id.menu_item_favorites:
-                navigateToFavorites();
-                break;
-            case R.id.menu_item_settings:
-                navigateToSettings();
-                break;
+                Intent i = new Intent(android.content.Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Daily Prayer");
+                i.putExtra(android.content.Intent.EXTRA_TEXT, prayer.getDescription() + link);
+                startActivity(Intent.createChooser(i, "Share this Daily Prayer"));
+            }
+        } else if (id == R.id.menu_item_favorites) {
+            navigateToFavorites();
+        } else if (id == R.id.menu_item_settings) {
+            navigateToSettings();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
                 // Verify if ads are enabled.
                 boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
                 if (!adsEnabled) {
-                    adView.setVisibility(View.GONE);
+                    binding.adWrapper.setVisibility(View.GONE);
                 }
                 break;
             case 2:
                 // Verify if prayer is favorited.
-                mPresenter.reload();
+                presenter.reload();
                 break;
         }
     }
 
     @Override
-    public void showPrayer(Item prayer) {
-        mPrayer = prayer;
-        String description = mPrayer.getDescription();
+    public void showPrayer(Item p) {
+        prayer = p;
+        String description = prayer.getDescription();
         if (description.contains("<hr>")) {
-            mPrayer.setDescription(description.substring(0, description.lastIndexOf("<hr>")));
+            prayer.setDescription(description.substring(0, description.lastIndexOf("<hr>")));
         }
-        mPrayer.setDescription(Html.fromHtml(mPrayer.getDescription()).toString());
-        textTitle.setText(mPrayer.getTitle());
-        textContent.setText(mPrayer.getDescription());
-        if (mPrayer.getFav()) {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+        prayer.setDescription(Html.fromHtml(prayer.getDescription()).toString());
+        binding.textTitle.setText(prayer.getTitle());
+        binding.textContent.setText(prayer.getDescription());
+        if (prayer.getFav()) {
+            binding.buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
         } else {
-            buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+            binding.buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
         }
     }
 
     @Override
     public void showError() {
-        textTitle.setText("Error loading prayer. Please try again.\nPull down to refresh.");
-        textContent.setText("");
+        binding.textTitle.setText("Error loading prayer. Please try again.\nPull down to refresh.");
+        binding.textContent.setText("");
     }
 
     @Override
@@ -227,23 +191,24 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
         // Log error.
         Bundle params = new Bundle();
         params.putString("error_message", message);
-        mFirebaseAnalytics.logEvent("prayer_failure", params);
+        AnalyticsHelper.LogEvent(firebaseAnalytics, EventType.Error, params);
     }
 
     @Override
     public void showImage(String url) {
-        Picasso.with(this).load(url).fit().centerCrop().into(imageBack);
+        Picasso.with(this).load(url).fit().centerCrop().into(binding.imageBack);
     }
 
     @Override
     public void setLoadingIndicator(boolean active) {
         if (active) {
-            layoutProgress.setVisibility(View.VISIBLE);
-            ((View) buttonFav).setVisibility(View.GONE);
+            binding.layoutProgress.setVisibility(View.VISIBLE);
+            binding.buttonFav.setVisibility(View.GONE);
+            binding.buttonPlay.setVisibility(View.GONE);
         } else {
-            layoutProgress.setVisibility(View.GONE);
-            if (swipeRefreshLayout.isRefreshing()) {
-                swipeRefreshLayout.setRefreshing(false);
+            binding.layoutProgress.setVisibility(View.GONE);
+            if (binding.swipeRefreshLayout.isRefreshing()) {
+                binding.swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, "Prayer Updated!", Toast.LENGTH_SHORT).show();
             }
             redrawFab();
@@ -252,31 +217,65 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
 
     @Override
     public void onRefresh() {
-        mPresenter.reload();
+        presenter.reload();
     }
 
-    @OnClick(R.id.button_fav)
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                binding.buttonPlay.setEnabled(false);
+            } else {
+                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                    @Override
+                    public void onStart(String utteranceId) {
+                    }
+
+                    @Override
+                    public void onDone(String utteranceId) {
+                        binding.buttonPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play_arrow_white_24dp));
+                    }
+
+                    @Override
+                    public void onError(String utteranceId) {
+                    }
+
+                    @Override
+                    public void onStop(String utteranceId, boolean interrupted) {
+                        super.onStop(utteranceId, interrupted);
+                        binding.buttonPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play_arrow_white_24dp));
+                    }
+                });
+            }
+        } else {
+            binding.buttonPlay.setEnabled(false);
+        }
+    }
+
     public void buttonFavOnClick(View view) {
-        if (mPrayer != null) {
+        if (prayer != null) {
             // Create prayer id based on the date.
             @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             df.setTimeZone(TimeZone.getTimeZone("gmt"));
             String id = df.format(new Date());
 
-            if (!mPrayer.getFav()) {
+            if (!prayer.getFav()) {
                 // Prepare prayer for storage.
                 Prayer newPrayer = new Prayer();
                 newPrayer.setId(id);
-                newPrayer.setTitle(mPrayer.getTitle());
-                newPrayer.setDescription(mPrayer.getDescription());
+                newPrayer.setTitle(prayer.getTitle());
+                newPrayer.setDescription(prayer.getDescription());
 
                 // Save prayer.
-                mPresenter.savePrayer(newPrayer);
-                mPrayer.setFav(true);
+                presenter.savePrayer(newPrayer);
+                prayer.setFav(true);
+
+                AnalyticsHelper.LogEvent(firebaseAnalytics, EventType.Favorite, null);
             } else {
                 // Remove prayer from favorites.
-                mPresenter.deletePrayer(id);
-                mPrayer.setFav(false);
+                presenter.deletePrayer(id);
+                prayer.setFav(false);
             }
 
             redrawFab();
@@ -296,15 +295,53 @@ public class PrayerActivity extends DaggerAppCompatActivity implements PrayerCon
     }
 
     private void redrawFab() {
-        buttonFav.hide();
-        if(mPrayer != null) {
-            if (mPrayer.getFav()) {
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
+        // Fav button.
+        binding.buttonFav.hide();
+        binding.buttonPlay.hide();
+        if (prayer != null) {
+            if (prayer.getFav()) {
+                binding.buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_24dp));
             } else {
-                buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
+                binding.buttonFav.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24dp));
             }
         }
-        buttonFav.show();
+        binding.buttonFav.show();
+        binding.buttonPlay.show();
     }
 
+    private void setupAds() {
+        // Verify if ads are enabled.
+        boolean adsEnabled = getSharedPreferences("com.isscroberto.dailyprayerandroid", MODE_PRIVATE).getBoolean("AdsEnabled", true);
+        if (adsEnabled) {
+            // Load Ad Banner.
+            AdRequest adRequest = new AdRequest.Builder().build();
+            binding.adView.loadAd(adRequest);
+
+            binding.adView.setAdListener(new AdListener() {
+
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    binding.adWrapper.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdFailedToLoad(LoadAdError adError) {
+                    super.onAdFailedToLoad(adError);
+                    binding.adWrapper.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    private void playPrayer() {
+        if (tts.isSpeaking()) {
+            tts.stop();
+            binding.buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_white_24dp));
+        } else {
+            tts.speak(prayer.getDescription(), TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString());
+            binding.buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_stop_white_24dp));
+            AnalyticsHelper.LogEvent(firebaseAnalytics, EventType.Play, null);
+        }
+    }
 }
