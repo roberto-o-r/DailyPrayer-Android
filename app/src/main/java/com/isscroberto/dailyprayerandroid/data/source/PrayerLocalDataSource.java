@@ -2,9 +2,6 @@ package com.isscroberto.dailyprayerandroid.data.source;
 
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -13,12 +10,10 @@ import io.realm.Sort;
  * Created by roberto.orozco on 21/09/2017.
  */
 
-@Singleton
 public class PrayerLocalDataSource  {
 
     private final Realm mRealm;
 
-    @Inject
     public PrayerLocalDataSource() {
         mRealm = Realm.getDefaultInstance();
     }

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.preference.CheckBoxPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.anjlab.android.iab.v3.BillingProcessor
@@ -17,6 +18,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.isscroberto.dailyprayerandroid.BuildConfig
 import com.isscroberto.dailyprayerandroid.R
 import com.isscroberto.dailyprayerandroid.alarm.AlarmReceiver
+import com.isscroberto.dailyprayerandroid.analytics.AnalyticsHelper
+import com.isscroberto.dailyprayerandroid.analytics.EventType
 import java.util.*
 
 class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBillingHandler, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
@@ -28,13 +31,13 @@ class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBilling
         addPreferencesFromResource(R.xml.preferences)
 
         // Verify if ads are enabled.
-        val adsEnabled = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).getBoolean("AdsEnabled", true)
+        val adsEnabled = requireActivity().getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).getBoolean("AdsEnabled", true)
         if (adsEnabled) {
             // Initialize the billing processor.
             mBillingProcessor = BillingProcessor(activity, getString(R.string.billing_license_key), this)
             // Add click listener to preference.
-            val preferenceAds = findPreference("preference_ads")
-            preferenceAds.setOnPreferenceClickListener {
+            val preferenceAds = findPreference<Preference>("preference_ads")
+            preferenceAds?.setOnPreferenceClickListener {
                 if (BuildConfig.DEBUG) {
                     mBillingProcessor!!.purchase(activity, "android.test.purchased")
                 } else {
@@ -43,27 +46,27 @@ class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBilling
                 true
             }
         } else {
-            val preferenceAds = findPreference(getString(R.string.preference_ads))
-            val preferenceCategory = findPreference(getString(R.string.preference_category_general)) as PreferenceCategory
-            preferenceCategory.removePreference(preferenceAds)
+            val preferenceAds = findPreference<Preference>(getString(R.string.preference_ads))
+            val preferenceCategory = findPreference<PreferenceCategory>(getString(R.string.preference_category_general))
+            preferenceCategory?.removePreference(preferenceAds)
         }
 
         // Add click listener to preferences.
-        val preferencePrivacy = findPreference(getString(R.string.preference_privacy))
-        preferencePrivacy.setOnPreferenceClickListener {
+        val preferencePrivacy = findPreference<Preference>(getString(R.string.preference_privacy))
+        preferencePrivacy?.setOnPreferenceClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://isscroberto.com/daily-bible-privacy-policy/")))
             true
         }
-        val preferenceMoreApps = findPreference(getString(R.string.preference_apps))
-        preferenceMoreApps.setOnPreferenceClickListener {
+        val preferenceMoreApps = findPreference<Preference>(getString(R.string.preference_apps))
+        preferenceMoreApps?.setOnPreferenceClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pub:isscroberto")))
             true
         }
-        val preferenceReminder = findPreference(getString(R.string.preference_reminder)) as CheckBoxPreference
+        val preferenceReminder = findPreference<Preference>(getString(R.string.preference_reminder)) as CheckBoxPreference
         preferenceReminder.setOnPreferenceClickListener {
             if(preferenceReminder.isChecked) {
                 val tdp = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(this@PreferenceFragment, true)
-                tdp.show(fragmentManager, "Timepickerdialog")
+                tdp.show(parentFragmentManager, "Timepickerdialog")
                 tdp.setOnCancelListener {
                     preferenceReminder.isChecked = false
                 }
@@ -113,22 +116,22 @@ class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBilling
     }
 
     private fun setPreferenceReminderSummary() {
-        val preferenceReminder = findPreference(getString(R.string.preference_reminder)) as CheckBoxPreference
-        if(preferenceReminder.isChecked) {
-            val time = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).getString("ReminderTime", "")
+        val preferenceReminder = findPreference<CheckBoxPreference>(getString(R.string.preference_reminder))
+        if(preferenceReminder?.isChecked == true) {
+            val time = requireActivity().getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).getString("ReminderTime", "")
             preferenceReminder.summary = "Your daily prayer reminder is set at $time"
         } else {
-            preferenceReminder.summary = getString(R.string.settings_prayer_reminder_summary)
+            preferenceReminder?.summary = getString(R.string.settings_prayer_reminder_summary)
         }
     }
 
     private fun setReminder(hourOfDay: Int, minute: Int) {
         // Create alarm components.
-        val alarmManager = activity!!.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(context!!.applicationContext, AlarmReceiver::class.java).apply {
-            action = context!!.getString(R.string.action_prayer_reminder)
+        val alarmManager = requireActivity().getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(requireContext().applicationContext, AlarmReceiver::class.java).apply {
+            action = requireContext().getString(R.string.action_prayer_reminder)
         }
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0)
 
         // Set clanedar with time for alarm.
         val calendar: Calendar = Calendar.getInstance(Locale.getDefault()).apply {
@@ -142,42 +145,44 @@ class PreferenceFragment : PreferenceFragmentCompat(), BillingProcessor.IBilling
 
         // Update summary.
         val time = String.format("%02d:%02d", hourOfDay, minute)
-        val editor = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
+        val editor = requireActivity().getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
         editor.putString("ReminderTime", time)
         editor.apply()
         setPreferenceReminderSummary()
 
         // Log event.
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context!!)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(requireContext())
         val bundle = Bundle()
         bundle.putString("time", time)
-        firebaseAnalytics.logEvent("set_reminder", bundle)
+        AnalyticsHelper.LogEvent(firebaseAnalytics, EventType.Reminder, bundle);
     }
 
     private fun cancelReminder() {
         // Create alarm components.
-        val alarmManager = activity!!.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(activity!!.applicationContext, AlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(activity, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val alarmManager = requireActivity().getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(requireContext().applicationContext, AlarmReceiver::class.java).apply {
+            action = requireContext().getString(R.string.action_prayer_reminder)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0)
 
         // Cancel any previous alarms.
         alarmManager.cancel(pendingIntent)
 
         // Update summary.
-        val editor = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
+        val editor = requireActivity().getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
         editor.remove("ReminderTime")
         editor.apply()
         setPreferenceReminderSummary()
     }
 
     private fun disableAds() {
-        val editor = activity!!.getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
+        val editor = requireActivity().getSharedPreferences("com.isscroberto.dailyprayerandroid", Context.MODE_PRIVATE).edit()
         editor.putBoolean("AdsEnabled", false)
         editor.apply()
 
-        val preferenceAds = findPreference("preference_ads")
-        val preferenceCategory = findPreference("preference_general") as PreferenceCategory
-        preferenceCategory.removePreference(preferenceAds)
+        val preferenceAds = findPreference<Preference>("preference_ads")
+        val preferenceCategory = findPreference<PreferenceCategory>("preference_general")
+        preferenceCategory?.removePreference(preferenceAds)
     }
 
 }

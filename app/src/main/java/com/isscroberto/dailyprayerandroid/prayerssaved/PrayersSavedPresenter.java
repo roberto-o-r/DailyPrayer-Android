@@ -3,8 +3,6 @@ package com.isscroberto.dailyprayerandroid.prayerssaved;
 import com.isscroberto.dailyprayerandroid.data.models.Prayer;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 
-import javax.inject.Inject;
-
 import io.realm.RealmResults;
 
 /**
@@ -16,7 +14,6 @@ public class PrayersSavedPresenter implements PrayersSavedContract.Presenter {
     private final PrayerLocalDataSource mPrayerLocalDataSource;
     private PrayersSavedContract.View mView;
 
-    @Inject
     public PrayersSavedPresenter(PrayerLocalDataSource prayerLocalDataSource) {
         mPrayerLocalDataSource = prayerLocalDataSource;
     }

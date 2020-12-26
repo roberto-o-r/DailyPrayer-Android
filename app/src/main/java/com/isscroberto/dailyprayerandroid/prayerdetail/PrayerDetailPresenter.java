@@ -2,8 +2,6 @@ package com.isscroberto.dailyprayerandroid.prayerdetail;
 
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 
-import javax.inject.Inject;
-
 /**
  * Created by roberto.orozco on 23/09/2017.
  */
@@ -13,7 +11,6 @@ public class PrayerDetailPresenter implements PrayerDetailContract.Presenter{
     private final PrayerLocalDataSource mPrayerLocalDataSource;
     private PrayerDetailContract.View mView;
 
-    @Inject
     public PrayerDetailPresenter(PrayerLocalDataSource prayerLocalDataSource) {
         mPrayerLocalDataSource = prayerLocalDataSource;
     }

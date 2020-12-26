@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "307375962307-fiqs001t2h8u8gsl1rt9a0rpve5v12ap.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.isscroberto.dailyprayerandroid",
+            "certificate_hash": "98fe8322b6bd2f6c632fcc202b463b020d0aebba"
+          }
+        },
+        {
           "client_id": "307375962307-nr3ojasv405p4vr73j8f32q9l1pb2m0o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -33,22 +41,16 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "307375962307-qe4pqkskdi3pc8shrik3p39udekosbos.apps.googleusercontent.com",
+              "client_id": "307375962307-4nioe65o2ep7r94qo407u57h7pd3mo92.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-7136115266295688~9656525379"
     }
   ],
   "configuration_version": "1"

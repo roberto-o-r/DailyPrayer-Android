@@ -9,7 +9,6 @@ import com.isscroberto.dailyprayerandroid.data.models.RssResponse;
 import com.isscroberto.dailyprayerandroid.data.source.ImageRemoteDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerLocalDataSource;
 import com.isscroberto.dailyprayerandroid.data.source.PrayerRemoteDataSource;
-import com.isscroberto.dailyprayerandroid.di.ActivityScoped;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,7 +16,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +25,6 @@ import retrofit2.Response;
  * Created by roberto.orozco on 11/09/2017.
  */
 
-@ActivityScoped
 public class PrayerPresenter implements PrayerContract.Presenter {
 
     private final PrayerRemoteDataSource mPrayerDataSource;
@@ -35,7 +32,6 @@ public class PrayerPresenter implements PrayerContract.Presenter {
     private final ImageRemoteDataSource mImageDataSource;
     private PrayerContract.View mView;
 
-    @Inject
     public PrayerPresenter(PrayerRemoteDataSource prayerDataSource, PrayerLocalDataSource prayerLocalDataSource, ImageRemoteDataSource imageDataSource) {
         mPrayerDataSource = prayerDataSource;
         mPrayerLocalDataSource = prayerLocalDataSource;
