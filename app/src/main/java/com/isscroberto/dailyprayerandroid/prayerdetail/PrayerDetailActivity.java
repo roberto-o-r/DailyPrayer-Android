@@ -112,13 +112,13 @@ public class PrayerDetailActivity extends AppCompatActivity implements PrayerDet
                 @Override
                 public void onAdLoaded() {
                     super.onAdLoaded();
-                    binding.adView.setVisibility(View.VISIBLE);
+                    binding.adWrapper.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onAdFailedToLoad(LoadAdError adError) {
                     super.onAdFailedToLoad(adError);
-                    binding.adView.setVisibility(View.GONE);
+                    binding.adWrapper.setVisibility(View.GONE);
                 }
             });
         }
